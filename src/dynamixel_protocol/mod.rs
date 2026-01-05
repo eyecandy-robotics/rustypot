@@ -461,7 +461,7 @@ trait Protocol<P: Packet> {
             Ok(())
         } else {
             log::error!("Could not flush input buffer before sending instruction");
-            Err(Box::new(CommunicationErrorKind::ParsingError))
+            Err(Box::new(CommunicationErrorKind::TimeoutError))
         }
     }
 
