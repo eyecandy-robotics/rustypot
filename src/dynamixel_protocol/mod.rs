@@ -445,25 +445,24 @@ trait Protocol<P: Packet> {
         max_retries: usize,
         flush_after_delay: Duration,
     ) -> Result<()> {
-        let mut retries = 0;
-        while !self.is_input_buffer_empty(port)? && retries < max_retries {
+        for attempt in 1..=max_retries {
+            if self.is_input_buffer_empty(port)? {
+                return Ok(());
+            }
             log::warn!(
                 "Input buffer not empty before sending instruction, flushing... (retry {}/{})",
-                retries + 1,
+                attempt,
                 max_retries
             );
             self.flush(port)?;
             std::thread::sleep(flush_after_delay);
-            if self.is_input_buffer_empty(port)? {
-                break;
-            }
-            retries += 1;
         }
-        if !self.is_input_buffer_empty(port)? {
+        if self.is_input_buffer_empty(port)? {
+            Ok(())
+        } else {
             log::error!("Could not flush input buffer before sending instruction");
-            return Err(Box::new(CommunicationErrorKind::ParsingError));
+            Err(Box::new(CommunicationErrorKind::ParsingError))
         }
-        Ok(())
     }
 
     fn send_instruction_packet(
