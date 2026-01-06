@@ -445,22 +445,22 @@ trait Protocol<P: Packet> {
         max_retries: usize,
         flush_after_delay: Duration,
     ) -> Result<()> {
-        for attempt in 1..=max_retries {
+        for _attempt in 1..=max_retries {
             if self.is_input_buffer_empty(port)? {
                 return Ok(());
             }
-            log::warn!(
-                "Input buffer not empty before sending instruction, flushing... (retry {}/{})",
-                attempt,
-                max_retries
-            );
+            // log::warn!(
+            //     "Input buffer not empty before sending instruction, flushing... (retry {}/{})",
+            //     attempt,
+            //     max_retries
+            // );
             self.flush(port)?;
             std::thread::sleep(flush_after_delay);
         }
         if self.is_input_buffer_empty(port)? {
             Ok(())
         } else {
-            log::error!("Could not flush input buffer before sending instruction");
+            // log::error!("Could not flush input buffer before sending instruction");
             Err(Box::new(CommunicationErrorKind::TimeoutError))
         }
     }
@@ -479,7 +479,7 @@ trait Protocol<P: Packet> {
             Duration::from_millis(Self::FLUSH_RETRY_DELAY_MS),
         )?;
 
-        log::debug!(">>> {:?}", packet.to_bytes());
+        // log::debug!(">>> {:?}", packet.to_bytes());
 
         match port.write_all(&packet.to_bytes()) {
             Ok(_) => Ok(()),
@@ -502,7 +502,7 @@ trait Protocol<P: Packet> {
         data.extend(header);
         data.extend(payload);
 
-        log::debug!("<<< {data:?}");
+        // log::debug!("<<< {data:?}");
 
         P::status_packet(&data, sender_id)
     }
@@ -515,7 +515,7 @@ trait Protocol<P: Packet> {
     fn flush(&self, port: &mut dyn SerialPort) -> Result<()> {
         let n = port.bytes_to_read()? as usize;
         if n > 0 {
-            log::info!("Needed to flush serial port ({n} bytes)...");
+            // log::info!("Needed to flush serial port ({n} bytes)...");
             let mut buff = vec![0u8; n];
             port.read_exact(&mut buff)?;
         }
