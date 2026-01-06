@@ -436,6 +436,35 @@ trait Protocol<P: Packet> {
         Ok(())
     }
 
+    const MAX_FLUSH_RETRIES: usize = 3;
+    const FLUSH_RETRY_DELAY_MS: u64 = 5;
+
+    fn flush_if_needed(
+        &self,
+        port: &mut dyn SerialPort,
+        max_retries: usize,
+        flush_after_delay: Duration,
+    ) -> Result<()> {
+        for attempt in 1..=max_retries {
+            if self.is_input_buffer_empty(port)? {
+                return Ok(());
+            }
+            log::warn!(
+                "Input buffer not empty before sending instruction, flushing... (retry {}/{})",
+                attempt,
+                max_retries
+            );
+            self.flush(port)?;
+            std::thread::sleep(flush_after_delay);
+        }
+        if self.is_input_buffer_empty(port)? {
+            Ok(())
+        } else {
+            log::error!("Could not flush input buffer before sending instruction");
+            Err(Box::new(CommunicationErrorKind::TimeoutError))
+        }
+    }
+
     fn send_instruction_packet(
         &self,
         port: &mut dyn SerialPort,
@@ -444,10 +473,11 @@ trait Protocol<P: Packet> {
         // Before we send an instruction
         // The input buffer should always be empty
         // (if not, it means that an old corrupted message need to be flushed)
-        if !self.is_input_buffer_empty(port)? {
-            self.flush(port)?;
-        }
-        assert!(self.is_input_buffer_empty(port)?);
+        self.flush_if_needed(
+            port,
+            Self::MAX_FLUSH_RETRIES,
+            Duration::from_millis(Self::FLUSH_RETRY_DELAY_MS),
+        )?;
 
         log::debug!(">>> {:?}", packet.to_bytes());
 

@@ -1,3 +1,7 @@
+### Version 1.4.1
+
+- Make flush method more robust and replace potential panic with error.
+
 ## Version 1.4.0
 
 - Add support for factory reset in core library and python bindings.
