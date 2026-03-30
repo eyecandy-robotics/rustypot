@@ -52,7 +52,7 @@ fn main() {
 ```
 
 ```rust
-use rustypot::servo::feetech::sts3215::STS3215Controller;
+use rustypot::servo::feetech::sts::StsController;
 use std::time::Duration;
 
 fn main() {
@@ -61,7 +61,7 @@ fn main() {
         .open()
         .unwrap();
 
-    let mut c = STS3215Controller::new()
+    let mut c = StsController::new()
             .with_protocol_v1()
             .with_serial_port(serial_port);
 
@@ -122,12 +122,12 @@ See [maturin official documentation](https://maturin.rs) for more information on
 
 The Python bindings exposes the same API as the Controller API in the rust crate.
 
-You first need to create a Controller object. For instance, to communicate with a serial port to Feetech STS3215 motors, you can do the following:
+You first need to create a Controller object. For instance, to communicate with a serial port to Feetech STS motors, you can do the following:
 
 ```python
-from rustypot import Sts3215PyController
+from rustypot import StsPyController
 
-c = Sts3215PyController(serial_port='/dev/ttyUSB0', baudrate=1_000_000, timeout=0.1)
+c = StsPyController(serial_port='/dev/ttyUSB0', baudrate=1_000_000, timeout=0.1)
 ```
 
 

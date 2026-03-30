@@ -27,11 +27,11 @@ crate::register_servo!(
         (XL430W250, 1060),
         (XL430W2502, 1090)
     ),
-    servo: (feetech, STS3215,
+    servo: (feetech, STS,
         (STS3215, 2307),
         (STS3032, 2563)
     ),
-    servo: (feetech, SCS0009,
+    servo: (feetech, SCS,
         (SCS0009, 1280)
     ),
     servo: (orbita, orbita2d_poulpe,

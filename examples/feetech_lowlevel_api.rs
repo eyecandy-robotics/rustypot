@@ -1,6 +1,6 @@
 use std::{error::Error, thread, time::Duration};
 
-use rustypot::{servo::feetech::sts3215, DynamixelProtocolHandler};
+use rustypot::{servo::feetech::sts, DynamixelProtocolHandler};
 fn main() -> Result<(), Box<dyn Error>> {
     let serialportname: String = "/dev/tty.usbmodem58FA0822621".to_string();
     let baudrate: u32 = 1_000_000;
@@ -20,8 +20,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     while start_overall.elapsed() < duration {
         let start_time = std::time::Instant::now();
 
-        let _x: i16 = sts3215::read_raw_present_position(&io, serial_port.as_mut(), ids[0])?;
-        let x = sts3215::sync_read_present_position(&io, serial_port.as_mut(), &ids)?;
+        let _x: i16 = sts::read_raw_present_position(&io, serial_port.as_mut(), ids[0])?;
+        let x = sts::sync_read_present_position(&io, serial_port.as_mut(), &ids)?;
         println!("present pos: {:?}", x);
 
         let elapsed_time = start_time.elapsed();

@@ -38,7 +38,7 @@
 //!
 //! ### With the high-level API
 //! ```no_run
-//! use rustypot::servo::feetech::sts3215::Sts3215Controller;
+//! use rustypot::servo::feetech::sts::StsController;
 //! use std::time::Duration;
 //!
 //! let serial_port = serialport::new("/dev/ttyUSB0", 1_000_000)
@@ -46,7 +46,7 @@
 //!     .open()
 //!     .unwrap();
 //!
-//! let mut c = Sts3215Controller::new()
+//! let mut c = StsController::new()
 //!         .with_protocol_v1()
 //!         .with_serial_port(serial_port);
 //!

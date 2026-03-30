@@ -1,3 +1,2 @@
-pub mod scs0009;
-pub mod sts3032;
-pub mod sts3215;
+pub mod scs;
+pub mod sts;

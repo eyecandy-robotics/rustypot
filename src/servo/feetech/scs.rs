@@ -2,11 +2,11 @@ use crate::generate_servo;
 use crate::servo::conversion::Conversion;
 
 generate_servo!(
-    SCS0009, v1,
+    SCS, v1,
     reg: (model, r, 3, u16, None),
     reg: (id, rw, 5, u8, None),
     reg: (baudrate, rw, 6, u8, None),
-    reg: (return_delay_time, rw, 7, u8, None), //RESERVED?
+    reg: (return_delay_time, rw, 7, u8, None), // RESERVED?
     reg: (response_status_level, rw, 8, u8, None),
     reg: (min_angle_limit, rw, 9, i16, AnglePosition),
     reg: (max_angle_limit, rw, 11, i16, AnglePosition),
@@ -14,7 +14,7 @@ generate_servo!(
     reg: (max_voltage_limit, rw, 14, u8, None),
     reg: (min_voltage_limit, rw, 15, u8, None),
     reg: (max_torque_limit, rw, 16, u16, TorqueLimit),
-    reg: (phase, rw, 18, u8, None), //SPECIAL REG
+    reg: (phase, rw, 18, u8, None), // SPECIAL REG
     reg: (unloading_condition, rw, 19, u8, None),
     reg: (led_alarm_condition, rw, 20, u8, None),
     reg: (p_coefficient, rw, 21, u8, None),
@@ -56,7 +56,6 @@ impl Conversion for Velocity {
     type UsiType = f64;
 
     fn from_raw(raw: u16) -> f64 {
-        // println!("DEBUG SPEED: {:?}", raw.to_be());
         if raw.to_be() > (1 << 15) {
             -300.0_f64.to_radians() / 1024.0 * (raw.to_be() & 0x3ff) as f64
         } else {
@@ -80,7 +79,7 @@ impl Conversion for AnglePosition {
     }
 
     fn to_raw(value: f64) -> i16 {
-        let a = (1024.0 * (value) / (300.0_f64.to_radians()) + 511.0) as i16;
+        let a = (1024.0 * value / (300.0_f64.to_radians()) + 511.0) as i16;
         a.to_be()
     }
 }

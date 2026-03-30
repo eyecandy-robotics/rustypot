@@ -2,9 +2,9 @@
 
 > ⚠️ **Warning:** This documentation is only intended for servos that communicate via the Dynamixel Protocol (v1 or v2), such as the Robotis Dynamixel or Feetech servos.
 
-* Create a new file in the service folder (or a subfolder such as feetech or dynamixel), for instance [sts3215.rs](./feetech/sts3215.rs) in the feetech folder. Make sure to add its declaration in the parent module (for instance in [./feetech/mod.rs]) as they must be explicitly declared in Rust. Something like this: 
+* Create a new file in the service folder (or a subfolder such as feetech or dynamixel), for instance [sts.rs](./feetech/sts.rs) in the feetech folder. Make sure to add its declaration in the parent module (for instance in [./feetech/mod.rs]) as they must be explicitly declared in Rust. Something like this:
 ```rust
-pub mod sts3215.rs
+pub mod sts;
 ```
 
 * Add the servo definition in the new file. You can use the [MX](./servo/dynamixel/mx.rs) as a template. The macro should defined the `name` of the servo, the `protocol version` used and then a list of all registers with their name, address, access, type and conversion type (can be set to None to get the raw register value). 

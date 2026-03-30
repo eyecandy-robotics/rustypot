@@ -5,7 +5,7 @@ use crate::servo::conversion::Conversion;
 use crate::servo::dynamixel::mx::AnglePosition;
 
 generate_servo!(
-    STS3032, v1,
+    STS, v1,
     reg: (model, r, 3, u16, None),
     reg: (id, rw, 5, u8, None),
     reg: (baudrate, rw, 6, u8, None),
@@ -45,7 +45,7 @@ generate_servo!(
     reg: (lock, rw, 55, u8, bool),
     reg: (present_position, r, 56, i16, AnglePosition),
     reg: (present_speed, r, 58, u16, Velocity),
-    reg: (present_load, r, 60, u16, Load),
+    reg: (present_load, r, 60, u16, None),
     reg: (present_voltage, r, 62, u8, None),
     reg: (present_temperature, r, 63, u8, None),
     reg: (status, r, 65, u8, None),
@@ -53,29 +53,6 @@ generate_servo!(
     reg: (present_current, r, 69, u16, None),
     reg: (maximum_acceleration, rw, 85, u16, None),
 );
-
-pub struct Load;
-
-impl Conversion for Load {
-    type RegisterType = u16;
-    type UsiType = f64;
-
-    fn from_raw(raw: u16) -> f64 {
-        let mut value = raw as f64;
-        if value > ((1 << 10) as f64) {
-            value = -(value - ((1 << 10) as f64));
-        }
-        (value) / (1023.0)
-    }
-
-    fn to_raw(value: f64) -> u16 {
-        let mut value = (1023.0) * value;
-        if value < 0.0 {
-            value = -value + (1 << 10) as f64;
-        }
-        value as u16
-    }
-}
 
 pub struct Velocity;
 
@@ -138,7 +115,7 @@ impl Conversion for Offset {
 mod tests {
     #[test]
     fn offset_conversions() {
-        use crate::servo::{conversion::Conversion, feetech::sts3032::Offset};
+        use crate::servo::{conversion::Conversion, feetech::sts::Offset};
         use std::f64::consts::{FRAC_PI_2, PI};
 
         assert_eq!(Offset::to_raw(0.0), 0);
