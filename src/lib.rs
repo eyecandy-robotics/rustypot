@@ -61,6 +61,9 @@ pub mod servo;
 mod dynamixel_protocol;
 pub use dynamixel_protocol::{CommunicationErrorKind, DynamixelProtocolHandler};
 
+mod modbus_protocol;
+pub use modbus_protocol::ModbusProtocolHandler;
+
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 #[cfg(feature = "python")]
@@ -74,6 +77,7 @@ fn rustypot(m: &Bound<'_, PyModule>) -> PyResult<()> {
     pyo3_log::init();
 
     servo::register_class(m)?;
+    m.add_class::<servo::feetech::smblmb::SmblmbPyController>()?;
 
     Ok(())
 }
