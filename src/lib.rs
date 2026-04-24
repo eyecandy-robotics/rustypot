@@ -78,6 +78,7 @@ fn rustypot(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     servo::register_class(m)?;
     m.add_class::<servo::feetech::smblmb::SmblmbPyController>()?;
+    m.add_class::<servo::feetech::smblmb::SmblmbAsyncPyController>()?;
 
     Ok(())
 }
